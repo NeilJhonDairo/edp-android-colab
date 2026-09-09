@@ -1,0 +1,19 @@
+package ui
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import data.ThemeRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+
+class ThemeViewModel(private val repo: ThemeRepository) : ViewModel() {
+
+    val isDarkTheme: StateFlow<Boolean> = repo.isDarkTheme
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    fun onThemeChanged(dark: Boolean) {
+        viewModelScope.launch { repo.setDarkTheme(dark) }
+    }
+}
